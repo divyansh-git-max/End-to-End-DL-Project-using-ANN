@@ -8,7 +8,7 @@ import pickle
 from sklearn.preprocessing import StandardScaler,LabelEncoder,OrdinalEncoder,OneHotEncoder
 from sklearn.model_selection import train_test_split
 
-model = tf.keras.models.load_model('model.h5')
+model = tf.keras.models.load_model('model.h5',compile=False)
 with open('OneHotEncoder_geo.pkl','rb') as file:
     label_encoder_geo=pickle.load(file)
 
