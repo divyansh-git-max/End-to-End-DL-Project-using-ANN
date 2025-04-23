@@ -3,8 +3,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import load_model
-import matplotlib.pyplot as plt
-
+import pickle
 
 from sklearn.preprocessing import StandardScaler,LabelEncoder,OrdinalEncoder,OneHotEncoder
 from sklearn.model_selection import train_test_split
@@ -35,7 +34,6 @@ is_active_member = st.selectbox('Is Active Member', [0, 1])
 
 input_data = pd.DataFrame({
     'CreditScore': [credit_score],
-    'Geography': [geography],
     'Gender': [label_encoder_gender.transform([gender])[0]],
     'Age': [age],
     'Tenure': [tenure],
@@ -45,4 +43,27 @@ input_data = pd.DataFrame({
     'IsActiveMember': [is_active_member],
     'EstimatedSalary': [estimated_salary]
 })
+
+geo_encoded = label_encoder_geo.transform([[geography]]).toarray()
+geo_encoded_df = pd.DataFrame(geo_encoded, columns=label_encoder_geo.get_feature_names_out(['Geography']))
+
+
+
+
+input_data=pd.concat([input_data.reset_index(drop=True),geo_encoded_df],axis=1)
+
+
+
+input_data_scaled=scaler.transform(input_data)
+prediction=model.predict(input_data_scaled)
+predict_proba=prediction[0][0]
+
+st.write(f'proba: {predict_proba}')
+if predict_proba>0.5:
+    st.write("Customer is likely to churn")
+    
+else:
+    st.write("Customer is not likely to churn")
+
+
 
